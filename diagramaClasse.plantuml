@@ -1,0 +1,95 @@
+@startuml
+
+package model {
+
+    class Aluguel {
+        - DVD dvd
+        - int diasAlugado
+        - double precoDVDNormal = 2.0
+        - double precoDVDLancamento = 3.0
+        - double precoDVDInfantil = 1.5
+        - double acrescimo = 1.5
+        + Aluguel(DVD dvd, int diasAlugado)
+        + DVD getDVD()
+        + double calcularAluguel()
+        + boolean ehDVDBonus()
+        + int getDiasAlugado()
+    }
+
+    class Cliente {
+        - String nome
+        - List<Aluguel> dvdsAlugados
+        - Extrato extrato
+        + Cliente(String nome)
+        + String getNome()
+        + void setExtrato(Extrato extrato)
+        + void adicionaAluguel(Aluguel aluguel)
+        + String getExtrato()
+        + List<Aluguel> getDvdsAlugados()
+        + double getValorTotalAluguel()
+    }
+
+    class DVD {
+        - String titulo
+        - TipoDVD tipo
+        - boolean ehBonus
+        - static List<TipoDVD> tiposDVDBonus
+        + DVD(String titulo, TipoDVD tipo, boolean b)
+        + String getTitulo()
+        + void setTitulo(String titulo)
+        + TipoDVD getTipo()
+        + void setTipo(TipoDVD tipo)
+        + boolean ehBonus()
+        + void setEhBonus(boolean ehBonus)
+    }
+
+    abstract class Extrato {
+        - Cliente cliente
+        + Extrato(Cliente cliente)
+        + abstract String getHeader(String nomeCliente)
+        + abstract String getLineSeparator()
+        + abstract String alugelFormater(String dvdTitulo, double valor)
+        + abstract String getFooter(double valorTotal, int pontosTotais)
+        + final String mostrarExtrato()
+    }
+
+    class HTMLExtrato extends Extrato {
+        + HTMLExtrato(Cliente cliente)
+        + String getHeader(String nomeCliente)
+        + String getLineSeparator()
+        + String alugelFormater(String dvdTitulo, double valor)
+        + String getFooter(double valorTotal, int pontosTotais)
+    }
+
+    class NullExtrato extends Extrato {
+        + NullExtrato(Cliente cliente)
+        + String getHeader(String nomeCliente)
+        + String getLineSeparator()
+        + String alugelFormater(String dvdTitulo, double valor)
+        + String getFooter(double valorTotal, int pontosTotais)
+    }
+
+    class TextExtrato extends Extrato {
+        + TextExtrato(Cliente cliente)
+        + String getHeader(String nomeCliente)
+        + String getLineSeparator()
+        + String alugelFormater(String dvdTitulo, double valor)
+        + String getFooter(double valorTotal, int pontosTotais)
+    }
+
+    enum TipoDVD {
+        NORMAL,
+        LANCAMENTO,
+        INFANTIL
+    }
+
+    Cliente "1" *-- "0..*" Aluguel
+    Cliente "1" *-- "1" Extrato
+    Aluguel "1" *-- "1" DVD
+    DVD "1" *-- "1" TipoDVD
+    Extrato <|-- HTMLExtrato
+    Extrato <|-- NullExtrato
+    Extrato <|-- TextExtrato
+}
+
+@enduml
